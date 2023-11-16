@@ -2,46 +2,46 @@
 
 /**
  **_memset - fills memory with a constant byte
- *@s: the pointer to the memory area
- *@b: the byte to fill *s with
- *@n: the amount of bytes to be filled
- *Return: (s) a pointer to the memory area s
+ *@s: the point to th mmory ara
+ *@b: the bytes to fill *s wih the pointer
+ *@n: the number of bites to be fill
+ *Return: (s) memory to the pointer area s
  */
 char *_memset(char *s, char b, unsigned int n)
 {
-	unsigned int i;
+	unsigned int k;
 
-	for (i = 0; i < n; i++)
-		s[i] = b;
+	for (k = 0; k < n; k++)
+		s[k] = b;
 	return (s);
 }
 
 /**
- * ffree - frees a string of strings
+ * ffree - remove the momeries of code
  * @pp: string of strings
  */
 void ffree(char **pp)
 {
-	char **a = pp;
+	char **b = pp;
 
 	if (!pp)
 		return;
 	while (*pp)
 		free(*pp++);
-	free(a);
+	free(b);
 }
 
 /**
- * _realloc - reallocates a block of memory
- * @ptr: pointer to previous malloc'ated block
+ * _realloc - removies a block of code memory
+ * @ptr: pointer of comming malloc blocks
  * @old_size: byte size of previous block
- * @new_size: byte size of new block
+ * @new_size: bytes of of new blocks
  *
- * Return: pointer to da ol'block nameen.
+ * Return: point to  block names.
  */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *p;
+	char *v;
 
 	if (!ptr)
 		return (malloc(new_size));
@@ -50,13 +50,13 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 	if (new_size == old_size)
 		return (ptr);
 
-	p = malloc(new_size);
-	if (!p)
+	v = malloc(new_size);
+	if (!v)
 		return (NULL);
 
 	old_size = old_size < new_size ? old_size : new_size;
 	while (old_size--)
-		p[old_size] = ((char *)ptr)[old_size];
+		v[old_size] = ((char *)ptr)[old_size];
 	free(ptr);
-	return (p);
+	return (v);
 }
