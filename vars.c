@@ -1,8 +1,8 @@
 #include "shell.h"
 
 /**
- * is_chain - test if current char in buffer is a chain delimeter
- * @info: the parameter structure th pointer
+ * is_chain - test if current char in buffer is a chain ds
+ * @info: the params structures th pointer
  * @buf: the buffer chars
  * @p: addres of the buffer
  *
@@ -24,9 +24,9 @@ int is_chain(info_t *info, char *buf, size_t *p)
 		j++;
 		info->cmd_buf_type = CMD_AND;
 	}
-	else if (buf[j] == ';') /* found end of this command */
+	else if (buf[j] == ';') /* found end of this line */
 	{
-		buf[j] = 0; /* replace semicolon with null */
+		buf[j] = 0; /* replace semicolon with not */
 		info->cmd_buf_type = CMD_CHAIN;
 	}
 	else
@@ -36,12 +36,12 @@ int is_chain(info_t *info, char *buf, size_t *p)
 }
 
 /**
- * check_chain - checks we should continue chaining based on last status
- * @info: the parameter struct
- * @buf: the char buffer
- * @p: address of current position in buf
- * @i: starting position in buf
- * @len: length of buf
+ * check_chain - checks we should continuing chaining whether on last found
+ * @info: the params struct
+ * @buf: the chars buffers
+ * @p: address of current item in buf
+ * @i: start position in buffer
+ * @len: length of buffering
  *
  * Return: Void
  */
@@ -70,37 +70,37 @@ void check_chain(info_t *info, char *buf, size_t *p, size_t i, size_t len)
 }
 
 /**
- * replace_alias - replaces an aliases in the tokenized string
- * @info: the parameter struct
+ * replace_alias - moves an alias in the tokenized strings
+ * @info: the params struct
  *
  * Return: 1 if replaced, 0 otherwise
  */
 int replace_alias(info_t *info)
 {
-	int i;
+	int j;
 	list_t *node;
-	char *p;
+	char *ptr;
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; j < 10; j++)
 	{
 		node = node_starts_with(info->alias, info->argv[0], '=');
 		if (!node)
 			return (0);
 		free(info->argv[0]);
-		p = _strchr(node->str, '=');
-		if (!p)
+		ptr = _strchr(node->str, '=');
+		if (!ptr)
 			return (0);
-		p = _strdup(p + 1);
-		if (!p)
+		ptr = _strdup(ptr + 1);
+		if (!ptr)
 			return (0);
-		info->argv[0] = p;
+		info->argv[0] = ptr;
 	}
 	return (1);
 }
 
 /**
- * replace_vars - replaces vars in the tokenized string
- * @info: the parameter struct
+ * replace_vars - moves vars in the tokenized strings
+ * @info: the params struct
  *
  * Return: 1 if replaced, 0 otherwise
  */
