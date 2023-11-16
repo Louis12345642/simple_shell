@@ -1,168 +1,168 @@
 #include "shell.h"
 
 /**
- * get_input - get the line without newline
- * @inf: params structure
- * @bu: buffer address
- * @le: adress length
+ * input_buf - buffers chained commands
+ * @info: parameter struct
+ * @buf: address of buffer
+ * @len: address of len var
  *
  * Return: bytes read
  */
-ssize_t input_buf(info_t *inf, char **bu, size_t *le)
+ssize_t input_buf(info_t *info, char **buf, size_t *len)
 {
-	ssize_t h = 0;
-	size_t len_j = 0;
+	ssize_t r = 0;
+	size_t len_p = 0;
 
-	if (!*le) /* feel the buffer if nothing left */
+	if (!*len) /* if nothing left in the buffer, fill it */
 	{
 		/*bfree((void **)info->cmd_buf);*/
-		free(*bu);
-		*bu = NULL;
+		free(*buf);
+		*buf = NULL;
 		signal(SIGINT, sigintHandler);
 #if USE_GETLINE
 		r = getline(buf, &len_p, stdin);
 #else
-		h = _getline(inf, bu, &len_j);
+		r = _getline(info, buf, &len_p);
 #endif
-		if (h > 0)
+		if (r > 0)
 		{
-			if ((*bu)[h - 1] == '\n')
+			if ((*buf)[r - 1] == '\n')
 			{
-				(*bu)[h - 1] = '\0'; /* remove the newline */
-				h--;
+				(*buf)[r - 1] = '\0'; /* remove trailing newline */
+				r--;
 			}
-			inf->linecount_flag = 1;
-			remove_comments(*bu);
-			build_history_list(inf, *bu, inf->histcount++);
+			info->linecount_flag = 1;
+			remove_comments(*buf);
+			build_history_list(info, *buf, info->histcount++);
 			/* if (_strchr(*buf, ';')) is this a command chain? */
 			{
-				*len = h;
-				inf->cmd_buf = bu;
+				*len = r;
+				info->cmd_buf = buf;
 			}
 		}
 	}
-	return (h);
+	return (r);
 }
 
 /**
- * get_input - get the line without newline
- * @inf: params structures
+ * get_input - gets a line minus the newline
+ * @info: parameter struct
  *
  * Return: bytes read
  */
-ssize_t get_input(info_t *inf)
+ssize_t get_input(info_t *info)
 {
-	static char *buf; /* the ';' cond the buffer */
-	static size_t h, g, len;
+	static char *buf; /* the ';' command chain buffer */
+	static size_t i, j, len;
 	ssize_t r = 0;
-	char **bufp = &(inf->arg), *p;
+	char **buf_p = &(info->arg), *p;
 
 	_putchar(BUF_FLUSH);
-	r = input_buf(inf, &buf, &len);
+	r = input_buf(info, &buf, &len);
 	if (r == -1) /* EOF */
 		return (-1);
-	if (len)	/* commdand left in the prompt */
+	if (len)	/* we have commands left in the chain buffer */
 	{
-		g = h; /* initial a iterater */
-		p = buf + h; /* repeats the pointer */
+		j = i; /* init new iterator to current buf position */
+		p = buf + i; /* get pointer for return */
 
-		check_chain(inf, buf, &g, h, len);
-		while (g < len) /* iterate the simbols simcol */
+		check_chain(info, buf, &j, i, len);
+		while (j < len) /* iterate to semicolon or end */
 		{
-			if (is_chain(inf, buf, &g))
+			if (is_chain(info, buf, &j))
 				break;
-			g++;
+			j++;
 		}
 
-		h = g + 1; /* incement the the last thing ';'' */
-		if (h >= len) /* check if it reach the end? */
+		i = j + 1; /* increment past nulled ';'' */
+		if (i >= len) /* reached end of buffer? */
 		{
-			h = len = 0; /* chenges the partions */
-			inf->cmd_buf_type = CMD_NORM;
+			i = len = 0; /* reset position and length */
+			info->cmd_buf_type = CMD_NORM;
 		}
 
-		*bufp = p; /* changes the pointer to the next code line */
-		return (_strlen(p)); /* gets the length of the available command */
+		*buf_p = p; /* pass back pointer to current command position */
+		return (_strlen(p)); /* return length of current command */
 	}
 
-	*bufp = buf; /* if not pass back the next buffer*/
-	return (r); /* get the size of the buffer */
+	*buf_p = buf; /* else not a chain, pass back buffer from _getline() */
+	return (r); /* return length of buffer from _getline() */
 }
 
 /**
- * read_buf - reads the current buuffer
- * @inf: param structure
+ * read_buf - reads a buffer
+ * @info: parameter struct
  * @buf: buffer
- * @j: size
+ * @i: size
  *
  * Return: r
  */
-ssize_t read_buf(info_t *inf, char *buf, size_t *j)
+ssize_t read_buf(info_t *info, char *buf, size_t *i)
 {
-	ssize_t g = 0;
+	ssize_t r = 0;
 
-	if (*j)
+	if (*i)
 		return (0);
-	g = read(inf->readfd, buf, READ_BUF_SIZE);
+	r = read(info->readfd, buf, READ_BUF_SIZE);
 	if (r >= 0)
-		*j = g;
-	return (g);
+		*i = r;
+	return (r);
 }
 
 /**
-* get_ - get the line without nextline
- * @inf: params structure
- * @pt: pointers address ot the next code
- * @leng: preacllocated size of the memory is here
+ * _getline - gets the next line of input from STDIN
+ * @info: parameter struct
+ * @ptr: address of pointer to buffer, preallocated or NULL
+ * @length: size of preallocated ptr buffer if not NULL
  *
- * Return: d
+ * Return: s
  */
-int _getline(info_t *inf, char **pt, size_t *leng)
+int _getline(info_t *info, char **ptr, size_t *length)
 {
 	static char buf[READ_BUF_SIZE];
-	static size_t g, len;
-	size_t f;
-	ssize_t o = 0, s = 0;
+	static size_t i, len;
+	size_t k;
+	ssize_t r = 0, s = 0;
 	char *p = NULL, *new_p = NULL, *c;
 
-	p = *pt;
-	if (p && leng)
-		s = *leng;
-	if (g == len)
-		g = len = 0;
+	p = *ptr;
+	if (p && length)
+		s = *length;
+	if (i == len)
+		i = len = 0;
 
-	o = read_buf(inf, buf, &len);
-	if (o == -1 || (o == 0 && len == 0))
+	r = read_buf(info, buf, &len);
+	if (r == -1 || (r == 0 && len == 0))
 		return (-1);
 
-	c = _strchr(buf + g, '\n');
-	f = c ? 1 + (unsigned int)(c - buf) : len;
-	new_p = _realloc(p, s, s ? s + f : f + 1);
-	if (!new_p) /* malloc may fail */
+	c = _strchr(buf + i, '\n');
+	k = c ? 1 + (unsigned int)(c - buf) : len;
+	new_p = _realloc(p, s, s ? s + k : k + 1);
+	if (!new_p) /* MALLOC FAILURE! */
 		return (p ? free(p), -1 : -1);
 
 	if (s)
-		_strncat(new_p, buf + g, f - g);
+		_strncat(new_p, buf + i, k - i);
 	else
-		_strncpy(new_p, buf + i, f - g + 1);
+		_strncpy(new_p, buf + i, k - i + 1);
 
-	s += f - g;
-	g = f;
+	s += k - i;
+	i = k;
 	p = new_p;
 
-	if (leng)
-		*leng = s;
-	*pt = p;
+	if (length)
+		*length = s;
+	*ptr = p;
 	return (s);
 }
 
 /**
-* get_input - get the line without ctr+c
- * @sig_n: number of signal
+ * sigintHandler - blocks ctrl-C
+ * @sig_num: the signal number
  *
  * Return: void
  */
-void sigintHandler(__attribute__((unused))int sig_n)
+void sigintHandler(__attribute__((unused))int sig_num)
 {
 	_puts("\n");
 	_puts("$ ");
