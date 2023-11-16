@@ -1,69 +1,69 @@
 #include "shell.h"
 
 /**
- * list_len - determines length of linked list
- * @h: pointer to first node
+ * list_len - finds the link list of the random
+ * @h: node to the head pointer is here
  *
  * Return: size of list
  */
 size_t list_len(const list_t *h)
 {
-	size_t i = 0;
+	size_t j = 0;
 
 	while (h)
 	{
 		h = h->next;
-		i++;
+		j++;
 	}
-	return (i);
+	return (j);
 }
 
 /**
- * list_to_strings - returns an array of strings of the list->str
- * @head: pointer to first node
+ * list_to_strings - get arrays in the strings ss
+ * @head: head to the first pointer
  *
- * Return: array of strings
+ * Return: strungs of arrays
  */
 char **list_to_strings(list_t *head)
 {
-	list_t *node = head;
-	size_t i = list_len(head), j;
-	char **strs;
+	list_t *nd = head;
+	size_t j = list_len(head), j;
+	char **s;
 	char *str;
 
-	if (!head || !i)
+	if (!head || !j)
 		return (NULL);
-	strs = malloc(sizeof(char *) * (i + 1));
-	if (!strs)
+	s = malloc(sizeof(char *) * (j + 1));
+	if (!s)
 		return (NULL);
-	for (i = 0; node; node = node->next, i++)
+	for (j = 0; nd; nd = nd->next, j++)
 	{
-		str = malloc(_strlen(node->str) + 1);
+		str = malloc(_strlen(nd->str) + 1);
 		if (!str)
 		{
-			for (j = 0; j < i; j++)
-				free(strs[j]);
-			free(strs);
+			for (j = 0; j < j; j++)
+				free(s[j]);
+			free(s);
 			return (NULL);
 		}
 
-		str = _strcpy(str, node->str);
-		strs[i] = str;
+		str = _strcpy(str, nd->str);
+		s[j] = str;
 	}
-	strs[i] = NULL;
-	return (strs);
+	s[j] = NULL;
+	return (s);
 }
 
 
 /**
- * print_list - prints all elements of a list_t linked list
- * @h: pointer to first node
+ * print_list - display all the elements of linklists
+ * @h: head to the first pointer
  *
  * Return: size of list
  */
 size_t print_list(const list_t *h)
 {
-	size_t i = 0;
+	size_t j = 0;
 
 	while (h)
 	{
@@ -73,27 +73,27 @@ size_t print_list(const list_t *h)
 		_puts(h->str ? h->str : "(nil)");
 		_puts("\n");
 		h = h->next;
-		i++;
+		j++;
 	}
-	return (i);
+	return (j);
 }
 
 /**
- * node_starts_with - returns node whose string starts with prefix
- * @node: pointer to list head
- * @prefix: string to match
- * @c: the next character after prefix to match
+ * node_starts_with - kndkjnvldgl jdfjkj jdknfjk jdfnjk 
+ * @node: head tp the pointer
+ * @prefix: matching the string is here
+ * @c: ixt thing id that did hard work 
  *
- * Return: match node or null
+ * Return: find the node here 
  */
 list_t *node_starts_with(list_t *node, char *prefix, char c)
 {
-	char *p = NULL;
+	char *g = NULL;
 
 	while (node)
 	{
-		p = starts_with(node->str, prefix);
-		if (p && ((c == -1) || (*p == c)))
+		g = starts_with(node->str, prefix);
+		if (g && ((c == -1) || (*g == c)))
 			return (node);
 		node = node->next;
 	}
@@ -101,22 +101,22 @@ list_t *node_starts_with(list_t *node, char *prefix, char c)
 }
 
 /**
- * get_node_index - gets the index of a node
- * @head: pointer to list head
- * @node: pointer to the node
+ * get_node_index - find the node index.
+ * @head: head to the pointer is here needed
+ * @node: node to the pointer is here
  *
- * Return: index of node or -1
+ * Return: number one index is here
  */
 ssize_t get_node_index(list_t *head, list_t *node)
 {
-	size_t i = 0;
+	size_t k = 0;
 
 	while (head)
 	{
 		if (head == node)
-			return (i);
+			return (k);
 		head = head->next;
-		i++;
+		k++;
 	}
 	return (-1);
 }

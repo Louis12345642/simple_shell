@@ -2,11 +2,11 @@
 
 /**
  * is_chain - test if current char in buffer is a chain delimeter
- * @info: the parameter struct
- * @buf: the char buffer
- * @p: address of current position in buf
+ * @info: the parameter structure th pointer
+ * @buf: the buffer chars
+ * @p: addres of the buffer
  *
- * Return: 1 if chain delimeter, 0 otherwise
+ * Return: 1 if the change a number 0 thoreswise
  */
 int is_chain(info_t *info, char *buf, size_t *p)
 {
