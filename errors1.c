@@ -49,8 +49,7 @@ void print_error(info_t *inf, char *est)
 /**
  * print_d - functions to display decimal numbers base 10
  * @inpt: file input
- * @f: fields to description is here 
- *
+ * @f: address of the string is here
  * Return: characters to be printed is here
  */
 int print_d(int inpt, int f)
