@@ -127,16 +127,16 @@ void find_cmd(info_t *info)
  */
 void fork_cmd(info_t *info)
 {
-	pid_t child_pids;
+	pid_t child_pid;
 
-	child_pids = fork();
-	if (child_pids == -1)
+	child_pid = fork();
+	if (child_pid == -1)
 	{
 		/* TODO: error functions */
 		perror("Error:");
 		return;
 	}
-	if (child_pids == 0)
+	if (child_pid == 0)
 	{
 		if (execve(info->path, info->argv, get_environ(info)) == -1)
 		{
