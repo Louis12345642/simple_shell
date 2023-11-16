@@ -48,13 +48,13 @@ int hsh(info_t *info, char **av)
  * @info: the params and return inf structs
  *
  * Return: -1 if built isno found,
- *			0 if built display successfully,
+ *			0 if builtin executed successfully,
  *			1 if builtin found but not successful,
- *			-2 if built signal exits
+ *			-2 if builtin signals exit()
  */
 int find_builtin(info_t *info)
 {
-	int h, built_in = -1;
+	int i, built_in_ret = -1;
 	builtin_table builtintbl[] = {
 		{"exit", _myexit},
 		{"env", _myenv},
@@ -67,26 +67,26 @@ int find_builtin(info_t *info)
 		{NULL, NULL}
 	};
 
-	for (h = 0; builtintbl[i].type; h++)
-		if (_strcmp(info->argv[0], builtintbl[h].type) == 0)
+	for (i = 0; builtintbl[i].type; i++)
+		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
 		{
 			info->line_count++;
-			built_in = builtintbl[h].func(info);
+			built_in_ret = builtintbl[i].func(info);
 			break;
 		}
-	return (built_in);
+	return (built_in_ret);
 }
 
 /**
- * find_cmd - gets the path of the thing
- * @info: the params and return infs structs
+ * find_cmd - finds a command in PATH
+ * @info: the parameter & return info struct
  *
  * Return: void
  */
 void find_cmd(info_t *info)
 {
-	char *pat = NULL;
-	int d, m;
+	char *path = NULL;
+	int i, k;
 
 	info->path = info->argv[0];
 	if (info->linecount_flag == 1)
@@ -94,16 +94,16 @@ void find_cmd(info_t *info)
 		info->line_count++;
 		info->linecount_flag = 0;
 	}
-	for (d = 0, m = 0; info->arg[d]; d++)
-		if (!is_delim(info->arg[d], " \t\n"))
-			m++;
-	if (!m)
+	for (i = 0, k = 0; info->arg[i]; i++)
+		if (!is_delim(info->arg[i], " \t\n"))
+			k++;
+	if (!k)
 		return;
 
-	pat = find_path(info, _getenv(info, "PATH="), info->argv[0]);
-	if (pat)
+	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
+	if (path)
 	{
-		info->path = pat;
+		info->path = path;
 		fork_cmd(info);
 	}
 	else
@@ -120,8 +120,8 @@ void find_cmd(info_t *info)
 }
 
 /**
- * fork_cmd -  a an execut threads to rn cd
- * @info: the params and return infs structure
+ * fork_cmd - forks a an exec thread to run cmd
+ * @info: the parameter & return info struct
  *
  * Return: void
  */
