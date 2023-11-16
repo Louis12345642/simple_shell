@@ -82,7 +82,7 @@ size_t print_list(const list_t *h)
  * node_starts_with - find the node index.
  * @node: head tp the pointer
  * @prefix: matching the string is here
- * @c: ixt thing id that did hard work 
+ * @c: matching the string is here
   * Return: number one index is here
  */
 list_t *node_starts_with(list_t *node, char *prefix, char c)
