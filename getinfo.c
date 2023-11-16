@@ -1,74 +1,74 @@
 #include "shell.h"
 
 /**
- * clear_info - initializes info_t struct
- * @info: struct address
+ * clear_info - initials the struct
+ * @inf: structure position address
  */
-void clear_info(info_t *info)
+void clear_info(info_t *inf)
 {
-	info->arg = NULL;
-	info->argv = NULL;
-	info->path = NULL;
-	info->argc = 0;
+	inf->arg = NULL;
+	inf->argv = NULL;
+	inf->path = NULL;
+	inf->argc = 0;
 }
 
 /**
- * set_info - initializes info_t struct
- * @info: struct address
- * @av: argument vector
+ * set_info - stet info structure
+ * @inf: struct address
+ * @pv:params vector
  */
-void set_info(info_t *info, char **av)
+void set_info(info_t *inf, char **pv)
 {
-	int i = 0;
+	int j = 0;
 
-	info->fname = av[0];
-	if (info->arg)
+	inf->fname = pv[0];
+	if (inf->arg)
 	{
-		info->argv = strtow(info->arg, " \t");
-		if (!info->argv)
+		inf->argv = strtow(inf->arg, " \t");
+		if (!inf->argv)
 		{
 
-			info->argv = malloc(sizeof(char *) * 2);
-			if (info->argv)
+			inf->argv = malloc(sizeof(char *) * 2);
+			if (inf->argv)
 			{
-				info->argv[0] = _strdup(info->arg);
-				info->argv[1] = NULL;
+				inf->argv[0] = _strdup(inf->arg);
+				inf->argv[1] = NULL;
 			}
 		}
-		for (i = 0; info->argv && info->argv[i]; i++)
+		for (j = 0; inf->argv && inf->argv[j]; j++)
 			;
-		info->argc = i;
+		inf->argc = j;
 
-		replace_alias(info);
-		replace_vars(info);
+		replace_alias(inf);
+		replace_vars(inf);
 	}
 }
 
 /**
- * free_info - frees info_t struct fields
- * @info: struct address
- * @all: true if freeing all fields
+ * free_info - make the struct_t free
+ * @inf: s
+ * @l: free all the memeries
  */
-void free_info(info_t *info, int all)
+void free_info(info_t *inf, int l)
 {
-	ffree(info->argv);
-	info->argv = NULL;
-	info->path = NULL;
-	if (all)
+	ffree(inf->argv);
+	inf->argv = NULL;
+	inf->path = NULL;
+	if (l)
 	{
-		if (!info->cmd_buf)
-			free(info->arg);
-		if (info->env)
-			free_list(&(info->env));
-		if (info->history)
-			free_list(&(info->history));
-		if (info->alias)
-			free_list(&(info->alias));
-		ffree(info->environ);
-			info->environ = NULL;
-		bfree((void **)info->cmd_buf);
-		if (info->readfd > 2)
-			close(info->readfd);
+		if (!inf->cmd_buf)
+			free(inf->arg);
+		if (inf->env)
+			free_list(&(inf->env));
+		if (inf->history)
+			free_list(&(inf->history));
+		if (inf->alias)
+			free_list(&(inf->alias));
+		ffree(inf->environ);
+			inf->environ = NULL;
+		bfree((void **)inf->cmd_buf);
+		if (inf->readfd > 2)
+			close(inf->readfd);
 		_putchar(BUF_FLUSH);
 	}
 }
