@@ -120,7 +120,7 @@ void find_cmd(info_t *info)
 }
 
 /**
- * fork_cmd -  a an execut threads to rn cdm
+ * fork_cmd -  a an execut threads to rn cd
  * @info: the params and return infs structure
  *
  * Return: void
@@ -132,7 +132,7 @@ void fork_cmd(info_t *info)
 	child_pid = fork();
 	if (child_pid == -1)
 	{
-		/* TODO: error functions */
+		/* TODO: PUT ERROR FUNCTION */
 		perror("Error:");
 		return;
 	}
@@ -145,7 +145,7 @@ void fork_cmd(info_t *info)
 				exit(126);
 			exit(1);
 		}
-		/* TODO: error functions */
+		/* TODO: PUT ERROR FUNCTION */
 	}
 	else
 	{
