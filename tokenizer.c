@@ -4,33 +4,33 @@
  * **strtow - sperates a string into sentence.  dels are ignored
  * @str: the input strings
  * @d: the delimeter string
- * Return: a fointer to an of array of string, of not on failing
+ * Return: a pointer to an array of strings,  not on failing
  */
 
 char **strtow(char *str, char *d)
 {
-	int x, j, k, q, numwos = 0;
+	int i, j, k, m, numwords = 0;
 	char **s;
 
 	if (str == NULL || str[0] == 0)
 		return (NULL);
 	if (!d)
 		d = " ";
-	for (x = 0; str[x] != '\0'; x++)
-		if (!is_delim(str[i], d) && (is_delim(str[x + 1], d) || !str[x + 1]))
-			numwos++;
+	for (i = 0; str[i] != '\0'; i++)
+		if (!is_delim(str[i], d) && (is_delim(str[i + 1], d) || !str[i + 1]))
+			numwords++;
 
-	if (numwos == 0)
+	if (numwords == 0)
 		return (NULL);
-	s = malloc((1 + numwos) * sizeof(char *));
+	s = malloc((1 + numwords) * sizeof(char *));
 	if (!s)
 		return (NULL);
-	for (x = 0, j = 0; j < numwos; j++)
+	for (i = 0, j = 0; j < numwords; j++)
 	{
-		while (is_delim(str[x], d))
+		while (is_delim(str[i], d))
 			i++;
 		k = 0;
-		while (!is_delim(str[x + k], d) && str[x + k])
+		while (!is_delim(str[i + k], d) && str[i + k])
 			k++;
 		s[j] = malloc((k + 1) * sizeof(char));
 		if (!s[j])
@@ -40,19 +40,19 @@ char **strtow(char *str, char *d)
 			free(s);
 			return (NULL);
 		}
-		for (q = 0; q < k; q++)
-			s[j][q] = str[x++];
-		s[j][q] = 0;
+		for (m = 0; m < k; m++)
+			s[j][m] = str[i++];
+		s[j][m] = 0;
 	}
 	s[j] = NULL;
 	return (s);
 }
 
 /**
- * **strtow2 - separates a string into sent
- * @str: thee inputing strings
+ * **strtow2 - splits a string into words
+ * @str: the input string
  * @d: the delimeter
- * Return: a find to an arrays of strings, or not on fail
+ * Return: a pointer to an array of strings, or NULL on failure
  */
 char **strtow2(char *str, char d)
 {
